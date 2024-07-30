@@ -3,8 +3,8 @@ import json
 import re
 
 # Define the API URL and API key
-api_url = "https://wei587.top/v1/chat/completions"
-api_key = "sk-wr8T9pMCuJheCyT8F94a6dBbDbD74e26A62908C7545fD4Dd"
+
+api_key = "API_key"
 
 headers = {
     "Authorization": f"Bearer {api_key}",
