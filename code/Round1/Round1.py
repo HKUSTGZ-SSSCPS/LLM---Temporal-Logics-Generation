@@ -8,23 +8,17 @@ from selenium.webdriver.common.keys import Keys
 import time
 
 # Define the API URL and API key
-api_url = "https://wei587.top/v1/chat/completions"
-api_key = "sk-YhNHEPiFlUB8WjmsA8E9D0C3F58e4d80B6CdE9734d88D50b"
+api_url = "https://gpt-api.hkust-gz.edu.cn/v1/chat/completions"
 
-# 定义全局变量
-raw_nl_2 = ""
-ltl_1 = ""
-
-headers = {
-    "Authorization": f"Bearer {api_key}",
-    "Content-Type": "application/json"
+headers = { 
+    "Content-Type": "application/json", 
+    "Authorization": "Bearer 36d2022014eb4e11be67a6dd76e0244cc1ae73a9094d45b9b270e8fc49a860fa"  # 请替换成你自己的API密钥
 }
 
-def gpt_transform(prompt, max_tokens=10000):
-    data = {
-        "model": "gpt-4-32k",
-        "messages": [{"role": "system", "content": prompt}],
-        "max_tokens": max_tokens,
+def gpt_transform(prompt, max_tokens=4000):
+    data = { 
+        "model": "gpt-3.5-turbo", 
+        "messages": [{"role": "user", "content": prompt}],  # 使用传入的prompt
         "temperature": 0.7
     }
     response = requests.post(api_url, headers=headers, data=json.dumps(data))
@@ -42,6 +36,10 @@ def gpt_transform(prompt, max_tokens=10000):
         return None
     
     return response_json['choices'][0]['message']['content'].strip()
+
+# 定义全局变量
+raw_nl_2 = ""
+ltl_1 = ""
 
 def check_syntactic_correctness(ltl_formula):
     stack = []
@@ -215,7 +213,7 @@ def generate_and_print_ltl():
     # Step 5: GPT-3将LTL-2转换为原始自然语言描述NL-2
     print("-" * 35, 'Step 5: LTL-2 to NL-2', "-" * 35)
     prompt_3 = f"""Transform the following LTL formula into a natural language driving instruction as a professional LTL expert:
-    {ltl_expression}
+    {ltl_3}
     Requirement: Please ensure that the original traffic instruction information is preserved as much as possible. Please output only the natural language parts; no additional content is needed.
     """
     raw_nl_2 = gpt_transform(prompt_3)
@@ -360,7 +358,7 @@ def automate_web_interaction(ltl_3):
 
         input_element.send_keys(Keys.RETURN)
 
-        time.sleep(10)
+        time.sleep(5)
 
         hoa_element = driver.find_element(By.XPATH, '//span[text()="HOA"]')
         hoa_element.click()
@@ -405,16 +403,9 @@ def extract_body_lines(output):
 
 # 第二段代码：HOA转换BA功能
 def parse_condition(condition_str):
-    """
-    解析条件字符串，将其标准化以便比较和映射。
-    支持以下形式的条件：
-    - 单一命题：'0', '1', '!0'
-    - 复合命题：'0&1', '!0&1', '0&!1', '!0&!1'
-    - 特殊命题：'t'（恒为真）
-    """
     condition_str = condition_str.strip()
     if condition_str == 't':
-        return 'True'  # 用字符串'True'表示恒为真
+        return 'True'  
     literals = condition_str.split('&')
     literals = sorted(literal.strip() for literal in literals)
     return '&'.join(literals)
