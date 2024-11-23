@@ -5,19 +5,17 @@ import json
 import re
 
 # Define the API URL and API key
-api_url = "https://wei587.top/v1/chat/completions"
-api_key = "sk-YhNHEPiFlUB8WjmsA8E9D0C3F58e4d80B6CdE9734d88D50b"
+api_url = "https://gpt-api.hkust-gz.edu.cn/v1/chat/completions"
 
-headers = {
-    "Authorization": f"Bearer {api_key}",
-    "Content-Type": "application/json"
+headers = { 
+    "Content-Type": "application/json", 
+    "Authorization": "Bearer 36d2022014eb4e11be67a6dd76e0244cc1ae73a9094d45b9b270e8fc49a860fa"  # 请替换成你自己的API密钥
 }
 
-def gpt_transform(prompt, max_tokens=10000):
-    data = {
-        "model": "gpt-4-32k",
-        "messages": [{"role": "system", "content": prompt}],
-        "max_tokens": max_tokens,
+def gpt_transform(prompt, max_tokens=4000):
+    data = { 
+        "model": "gpt-3.5-turbo", 
+        "messages": [{"role": "user", "content": prompt}],  # 使用传入的prompt
         "temperature": 0.7
     }
     response = requests.post(api_url, headers=headers, data=json.dumps(data))
@@ -38,10 +36,10 @@ def gpt_transform(prompt, max_tokens=10000):
 
 
 # Define the root directory
-root_dir = 'D:/RA/RAwork/Experiment/rabit250/'
+root_dir = 'D:/RA/RAwork/Experiment/rabit250 - 副本/'
 
 # Define file paths
-rabit_jar = os.path.join(root_dir, 'RABIT250/RABIT.jar')
+rabit_jar = os.path.join(root_dir, 'out/artifacts/rabit250____jar/rabit250 - 副本.jar')
 input = os.path.join('d:/RA/RAwork/Experiment/Round1/output.ba')
 comparison_automaton = os.path.join('d:/RA/RAwork/Experiment/Round1/Baserule.ba')
 
@@ -102,7 +100,17 @@ def correct_input_with_gpt(input_text, comparison_text, checking_output):
             [2]
             [3]
             ```
-        Provide the corrected Input Automaton (Only output the pure BA file without adding any extra information or description).
+        Next, I will provide some information about the counterexample. There are two methods to generate a counterexample:
+        The first is a BFS depth-first algorithm. It follows the order of breadth-first search, returning the earliest and shortest string that causes the two automata to behave differently.
+        At depth 0, the code checks single-symbol strings. If the two automata behave differently when processing a particular symbol, that symbol is considered the first string to cause a behavioral difference.At depth 1, the code checks strings composed of two symbols. If no differences are found at depth 0, it further examines strings of length 2. If a string of length 2 leads to different behavior, that string is the first one found.The process continues in this way, with the code checking longer strings as the depth increases, until it finds the first string that cannot be accepted by both automata. In this case, the counterexample could be a single string like a0 or a sequence such as a0a1a0.
+        
+        The second method is a Ramsey-based check, which examines whether the returned counterexample is in the form of a prefix(loop), and outputs a complete trace that shows non-inclusion.
+        
+        The RABIT output can provide some insights for making corrections. The line 'Aut A: # of Trans. X, # of States Y' indicates that the input automaton contains Y states and X state transitions. Similarly, 'Aut B: # of Trans. X, # of States Y' shows that the comparison automaton contains Y states and X state transitions. The line 'Aut A (after light preprocessing): # of Trans. X, # of States Y' represents the number of states Y and state transitions X in the input automaton after light preprocessing. The counterexample can provide some critical information. It represents the first "not included" instance found during depth-first search. The state transition path shows the sequence of state transitions that have occurred up to the point where the transition symbol was encountered. For example, 'S0_d:/RA -> S2_d:/RA' indicates a transition from state 0 to state 2 within the 'd:/RA' file. Since the two automata being compared have undergone light preprocessing, some state transition paths in the counterexample may differ slightly from those in the input automaton. You can understand them by logically reconstructing the transitions.
+        
+        You can make corrections by pruning or adding state transitions.
+        You need to provide the corrected Input Automaton (!Attenton:Only output the pure BA file without adding any extra information or description.).
+        !!Must obey: Don't add '```'!!!
         """
     )
     
