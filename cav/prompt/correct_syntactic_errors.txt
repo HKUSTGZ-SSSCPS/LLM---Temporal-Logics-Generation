@@ -1,0 +1,4 @@
+The following LTL formula has syntax errors, please correct it:
+{ltl_formula}
+You need to pay attention to the matching of parentheses. 
+Please output only a pure LTL expression, no extra text.
