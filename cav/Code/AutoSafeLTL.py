@@ -17,7 +17,7 @@ import subprocess
 api_url = "https://gpt-api.hkust-gz.edu.cn/v1/chat/completions"
 headers = { 
     "Content-Type": "application/json", 
-    "Authorization": "Bearer 36d2022014eb4e11be67a6dd76e0244cc1ae73a9094d45b9b270e8fc49a860fa"  # 这里替换为自己的密钥
+    "Authorization": "API Key"  # 这里替换为自己的密钥
 }
 
 def gpt_transform(prompt, max_tokens=4000):
