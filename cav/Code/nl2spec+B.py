@@ -18,7 +18,7 @@ api_url = "https://gpt-api.hkust-gz.edu.cn/v1/chat/completions"
 
 headers = {
     "Content-Type": "application/json",
-    "Authorization": "Bearer 36d2022014eb4e11be67a6dd76e0244cc1ae73a9094d45b9b270e8fc49a860fa"  # 请替换成你自己的API密钥
+    "Authorization": "API key"  # 请替换成你自己的API密钥
 }
 
 atomic_proposition_library = [
