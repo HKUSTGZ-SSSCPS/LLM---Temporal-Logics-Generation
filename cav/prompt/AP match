@@ -1,0 +1,3 @@
+"""
+        Please match the following LTL's atomic propositions:{LTL1} to a pre-defined library of atomic propositions library: {atomic_proposition_library}. If any proposition is similar to one in the library, replace it with the library's proposition. Only modify the atomic propositions without making any changes to other parts, ensuring that the LTL and its semantics remain consistent with the original. Return the raw updated LTL.
+"""
