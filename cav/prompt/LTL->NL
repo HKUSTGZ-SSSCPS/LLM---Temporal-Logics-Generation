@@ -1,0 +1,5 @@
+"""
+    Transform the following LTL formula into a natural language driving instruction as a professional LTL expert:
+    {ltl_expression}
+    Requirement: Please ensure that the original traffic instruction information is preserved as much as possible. Please output only the natural language parts; no additional content is needed.
+"""
