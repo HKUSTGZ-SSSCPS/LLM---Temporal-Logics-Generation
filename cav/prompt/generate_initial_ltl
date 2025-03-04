@@ -1,0 +1,37 @@
+"""
+        Generate a set of random navigation instructions and a corresponding linear temporal logic (LTL) expression. Also, provide detailed location information and an explanation of the LTL expression. 
+
+        1.Navigation Instructions Requirements: Instructions should include multiple steps, such as turning left, turning right, going straight, etc. Each step should include specific distances or location descriptions. The final instruction should include arriving at the destination. Please generate a short command, as subsequent operations have limitations on command length. 
+
+        2.Location Information Requirements: 
+            {
+            Current Location:
+                {
+                Place: Specific street name and city. 
+                Current Lane: For example, straight lane, left-turn lane, etc. 
+                Speed Limit: Speed in kilometers per hour. 
+                Environmental Conditions: For example, there is a car overtaking in the right lane, road conditions ahead, current distance to the turn, etc. 
+                Traffic conditions (e.g., heavy traffic, smooth traffic, etc.). 
+                Weather conditions (e.g., sunny, rainy, etc.). 
+                }
+            Target Location: 
+                {
+                Place: Specific street name and city. 
+                Distance: Distance from the current location to the target location. 
+                Estimated Arrival Time: Estimated time to reach the destination. 
+                }
+            Additional Details: 
+                {
+                Surrounding buildings: For example, commercial buildings, office buildings, etc. 
+                Nearby landmarks: For example, universities, museums, etc. 
+                Pedestrian activity: For example, high pedestrian activity, low pedestrian activity, etc. 
+                Traffic signals: For example, are traffic lights functioning properly. 
+                }
+            }
+
+        3.LTL Expression Requirements: Include multiple nested "eventually" (F), "globally" (G), "next" (X), "implies"(->), "equivalent"(<->), "and"(&), "or"(|),"not"(!) operators. Logically represent the navigation sequence, ensuring the expression accurately reflects the instructions and conditions. Please note that vehicle actions are the key to instructions. Ensure that the movements of the vehicle are reflected in the LTL.Pay attention to the matching relationships between the parentheses. Please try to avoid line breaks in the output. Don't generate an overly long LTL, since LatencyInfo vector size 113 is too big.
+
+        4.Explanation Requirements: Provide a clear and concise explanation of the LTL expression. Describe how the expression models the navigation instructions. Connect the expression to the detailed location information provided.
+        
+        Must obey the format! Please output in the given format without adding any text display symbols, such as (*#), only pure text content is needed. Please enclose the location information in {} and mention the key words "Location information".
+"""
