@@ -1,0 +1,1 @@
+This repository contians four experiments, namely: AutoSafeLTL(our work), nl2spec+B, AutoSafeLTL-C, AutoSafeLTL-D. (where B represents the Automated Verification component of our framework, C represents Agent LLM1 proposed by our work, and D represents Agent LLM2 proposed by our work.)
