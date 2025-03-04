@@ -1,0 +1,6 @@
+"""
+        Transform the following natural language driving instruction back into an LTL formula as a professional LTL expert:
+        {raw_nl_1}
+        LTL Expression Requirements: Include multiple nested "eventually" (F), "globally" (G), "next" (X), "implies"(->), "equivalent"(<->), "and"(&), "or"(|),"not"(!) operators. Logically represent the navigation sequence, ensuring the expression accurately reflects the instructions and conditions. Ensure that the movements of the vehicle are reflected in the LTL.pay attention to the matching relationships between the parentheses.
+        Please output without adding any text display symbols, such as (*#), only pure LTL expression text is needed. Don't generate an overly long LTL, since LatencyInfo vector size 113 is too big.
+"""
