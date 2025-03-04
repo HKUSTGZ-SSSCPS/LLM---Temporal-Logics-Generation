@@ -1,0 +1,18 @@
+"""
+        The current LTL1:
+        {LTL1}
+        does not satisfy the inclusion check based on the Buchi automaton comparison. Below is the analysis and revision guidance:
+        {understanding_output}
+
+        Your task is to modify and simplify LTL1 to ensure that it satisfies the inclusion check while keeping the formula as concise and flexible as possible. Adjustments should focus on resolving the specific issues identified in the guidance rather than adding restrictive or overly complex conditions. Aim for an intuitive and streamlined solution that aligns LTL1 with the comparison Buchi automaton.
+
+        Instructions:
+        1)Modify LTL1 based on the provided analysis.
+        2)Ensure the revised formula directly addresses the counterexample(s) while improving alignment with the comparison Buchi automaton.
+        3)Avoid adding unnecessary constraints or increasing the formula's complexity—prioritize simplicity and precision.
+        4)The 't' in BA is a specially string, it't not a true alphabet string, but a signal of 'unconditional', so don't add anything about 't' to the LTL directly, instead you should think about its logic and change that.
+        5)Don't add operators like '<', '>' and '=', which are not allowed by LTL's syntactic rules.
+        
+        Output Format:
+        Provide only the corrected LTL1 formula without any additional information or explanation.
+"""
