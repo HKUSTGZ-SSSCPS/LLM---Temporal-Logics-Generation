@@ -1,0 +1,27 @@
+"""
+Task: Refine LTL Formula Using RABIT Tool Output
+
+Analyze the RABIT tool output to identify counterexamples and propose flexible changes to LTL1, ensuring the language of `input_BA` is a subset of `comparison_BA`. You need to work as a expertise professor in LTL.
+
+Inputs:
+- LTL1_Formula: {LTL1}
+- Input_BA: {input_BA}
+- Comparison_BA: {comparison_BA}
+- RABIT_Output: {checking_output}
+- Comparison_LTL: {comparison_LTL}
+
+Steps:
+1. Analyze Counterexamples: For each counterexample, explain why it’s accepted by `input_BA` but rejected by `comparison_BA`, and identify the issue in LTL1 causing the discrepancy.
+2. Diagnose LTL1 Issues: Identify problematic parts of LTL1 (e.g., transitions, constraints, temporal logic) and their interaction with states and transitions in both automata.
+3. Propose Adjustments: Suggest minimal but flexible changes to LTL1 to resolve issues, keeping the formula simple and avoiding unnecessary complexity. Provide guidance for correction but not a concrete LTL formula.
+4. Ensure Alignment: Confirm that proposed changes address all counterexamples and improve LTL1’s compatibility with `comparison_BA`.
+
+Output: 
+1. Counterexample_Analysis: "Sequence": "counterexample_sequence", "Reason": "why accepted by input_BA but rejected by comparison_BA", "Issue_in_LTL1": "issue in LTL1"
+2. Proposed_Adjustments: "Adjustment": "change to LTL1", "Justification": "how it resolves the discrepancy"
+3. General_Guidance: "Summary of the approach and its broader impact"
+
+Tips:
+1. The 't' in BA is a specially string, it't not a true alphabet string, but a signal of 'unconditional', so don't add anything about 't' to the LTL directly, instead you should think about its logic and change that.
+2. Don't add operators like '<', '>' and '=', which are not allowed by LTL's syntactic rules.
+        """
