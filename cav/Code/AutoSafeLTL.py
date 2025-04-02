@@ -13,11 +13,18 @@ import time
 import os
 import subprocess
 
+# ------------------------- FILE PATH -----------------------------
+root_dir = 'local path'
+rabit_jar = os.path.join(root_dir, 'out/artifacts/rabit250____jar/rabit250 - new.jar')
+input_ba_path = os.path.join('d:/RA/RAwork/Experiment/Round1/output.ba')
+comparison_automaton = os.path.join('d:/RA/RAwork/Experiment/Round1/Baserule.ba')
+
+
 # ------------------------- GPT API -----------------------------
-api_url = "https://gpt-api.hkust-gz.edu.cn/v1/chat/completions"
+api_url = "API url"
 headers = { 
     "Content-Type": "application/json", 
-    "Authorization": "API Key"  # 这里替换为自己的密钥
+    "Authorization": "API Key"  # Replace with your own key.
 }
 
 def gpt_transform(prompt, max_tokens=4000):
@@ -41,10 +48,10 @@ def gpt_transform(prompt, max_tokens=4000):
     
     return response_json['choices'][0]['message']['content'].strip()
 
-# ---------------------- 语法检查与修正 -------------------------
+# ---------------------- Syntax check and correction -------------------------
 def check_syntactic_correctness(ltl_formula):
     """
-    用栈来简单判断 LTL 中括号是否匹配
+    Use a stack to check whether brackets match in LTL.
     """
     stack = []
     for char in ltl_formula:
@@ -58,7 +65,7 @@ def check_syntactic_correctness(ltl_formula):
 
 def correct_syntactic_errors(ltl_formula):
     """
-    调用 GPT 修正括号等语法错误
+    Call GPT to correct bracket and other syntax errors.
     """
     prompt_fix = f"""
     The following LTL formula has syntax errors, please correct it:
@@ -71,7 +78,7 @@ def correct_syntactic_errors(ltl_formula):
 
 def correct_ltl_formula(ltl_formula):
     """
-    循环调用 correct_syntactic_errors 直到括号配对正确
+    Loop to call correct_syntactic_errors until brackets are correctly matched.
     """
     while True:
         if check_syntactic_correctness(ltl_formula):
@@ -86,10 +93,10 @@ def correct_ltl_formula(ltl_formula):
         print("-" * 50)
     return ltl_formula
 
-# ---------------------- LTL 生成与转换示例 ----------------------
+# ---------------------- LTL generation and transformation ----------------------
 def extract_ltl_expression(response_text):
     """
-    从 GPT 返回的文本中匹配并提取出 "LTL Expression: ..." 内容
+    Match and extract the content starting with "LTL Expression: ..." from the text returned by GPT
     """
     ltl_expression_pattern = re.compile(r"LTL Expression:\s*(\{[\s\S]*?\}|\s*G[\s\S]*?(?=Explanation|$))", re.DOTALL)
     match = ltl_expression_pattern.search(response_text)
@@ -117,7 +124,7 @@ def extract_location_info(response_text):
 
 def generate_and_print_ltl():
     """
-    演示性地产生LTL公式，并进行简单的上下行转换。
+    Generate LTL formulas and perform upward and downward transformations.
     """
     ltl_prompt = (
         """
@@ -202,7 +209,7 @@ def generate_and_print_ltl():
         return None, None
     print(f"LTL-2: {ltl_2}")
 
-    # Step 4: 括号校验
+    # Step 4: Syntactic check
     print("-" * 35, 'Step 4: check LTL-2 correctness', "-" * 35)
     ltl_3 = correct_ltl_formula(ltl_2)
     if ltl_3 is None:
@@ -240,11 +247,8 @@ def generate_and_print_ltl():
 
     return ltl_final, raw_nl_2
 
-# --------------------- Spot 网站 -> HOA -> BA ----------------------
+# --------------------- LTL -> HOA -> BA ----------------------
 def automate_web_interaction(ltl_formula):
-    """
-    访问 spot.lre.epita.fr，将 LTL 转为 HOA，然后转成 BA (output.ba)
-    """
     url = 'https://spot.lre.epita.fr/app/'
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -252,33 +256,30 @@ def automate_web_interaction(ltl_formula):
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-extensions")
-    chrome_options.add_argument("--incognito")  # 使用无痕模式，避免缓存干扰
-    chrome_options.add_argument("--disable-application-cache")  # 禁用缓存
+    chrome_options.add_argument("--incognito")  
+    chrome_options.add_argument("--disable-application-cache")  
 
     driver = webdriver.Chrome(options=chrome_options)
 
     try:
-        # 打开页面
         driver.get(url)
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//input[@type="text" and @aria-invalid="false"]'))
         )
 
-        # 定位输入框并清空
+
         input_element = driver.find_element(By.XPATH, '//input[@type="text" and @aria-invalid="false"]')
         input_element.clear()
         input_element.send_keys(ltl_formula)
         input_element.send_keys(Keys.RETURN)
-        time.sleep(3)  # 等待页面响应
+        time.sleep(3)  
 
-        # 查找 HOA 转换选项
         hoa_element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//span[text()="HOA"]'))
         )
         hoa_element.click()
         time.sleep(2)
 
-        # 获取转换结果
         output_element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, '//pre[@class="jss15"]'))
         )
@@ -286,21 +287,21 @@ def automate_web_interaction(ltl_formula):
         print(f'Output: {output_text}')
 
     except NoSuchElementException as e:
-        print(f"元素未找到: {e}")
+        print(f"Element not found: {e}")
     except TimeoutException as e:
-        print(f"操作超时: {e}")
+        print(f"Operation timed out: {e}")
     except Exception as e:
-        print(f"发生错误: {e}")
+        print(f"An error occurred: {e}")
     finally:
-        # 确保浏览器进程被完全关闭
+
         driver.quit()
 
-    # 处理结果并保存
+
     
     ba_result = hoa_to_ba(output_text)
     save_to_ba_file(ba_result)
-    print("转换完成，结果已保存为 output.ba")
-    print("转换结果：")
+    print("The conversion is complete, and the result has been saved as output.ba")
+    print("Conversion result:")
     print(ba_result)
 
 
@@ -323,7 +324,7 @@ def gpt_replace_AP(atomic_proposition_library,LTL1):
 def hoa_to_ba(hoa_content):
     lines = hoa_content.strip().splitlines()
 
-    # 初始化变量
+    # Initialize variable
     ap_table = []
     initial_state = None
     accepting_states = []
@@ -333,17 +334,17 @@ def hoa_to_ba(hoa_content):
     acceptance_condition = None
 
     def parse_label(label):
-        """解析标签，将其中的运算符和原子命题进行处理"""
+        """Parse the label and process the operators and atomic propositions within it."""
         
         def process_condition(condition):
-            """将原子命题转换为可读格式"""
+            """Convert the atomic propositions into a readable format."""
             result = ""
             i = 0
             while i < len(condition):
                 char = condition[i]
-                if char.isdigit():  # 数字是 AP 表中的索引
-                    result += ap_table[int(char)]  # 使用 AP 表中的原子命题
-                elif char in "!&()":  # 运算符
+                if char.isdigit():  
+                    result += ap_table[int(char)]  
+                elif char in "!&()":  
                     result += char
                 elif char == " ":
                     i += 1
@@ -354,7 +355,7 @@ def hoa_to_ba(hoa_content):
             return result
 
         def split_conditions(expression, operator):
-            """根据给定的运算符分割表达式，确保括号匹配"""
+            """Split the expression based on the given operators, ensuring the brackets are matched."""
             parts = []
             depth = 0
             current = []
@@ -371,8 +372,8 @@ def hoa_to_ba(hoa_content):
             parts.append("".join(current).strip())
             return parts
 
-        # 检查是否是 | 运算符，并进行分割
-        if "|" in label:  # 确保 | 两边有空格
+
+        if "|" in label: 
             or_conditions = split_conditions(label, "|")
             parsed_conditions = [process_condition(cond.strip()) for cond in or_conditions]
             return parsed_conditions
@@ -385,35 +386,34 @@ def hoa_to_ba(hoa_content):
     for line in lines:
         line = line.strip()
 
-        # 跳过空行或者无关的头部信息
+       
         if not line or line.startswith("HOA") or line.startswith("--") or line.startswith("name"):
             continue
 
-        # 解析状态数
+        
         if line.startswith("States:"):
             total_states = int(line.split()[1])
 
-        # 解析初始状态
+        
         elif line.startswith("Start:"):
             initial_state = f"[{line.split()[1]}]"
 
-        # 解析接受条件
+       
         elif line.startswith("Acceptance:"):
             acceptance_condition = line.split()[1:]
 
-        # 解析原子命题表
+        
         elif line.startswith("AP:"):
             ap_table = line.split(" ")[2:]
-            ap_table = [ap.strip('"') for ap in ap_table]  # 去掉引号
+            ap_table = [ap.strip('"') for ap in ap_table]  
 
-        # 开始解析状态定义和转换
+ 
         elif line.startswith("State:"):
             parsing_states = True
             # print('sadasdasdas',line)
             state_info = line.split()
             current_state = f"[{state_info[1]}]"
             # print('sssssssssss', "1 Inf(0)" in" ".join(acceptance_condition))
-            # 检查状态是否是接受状态
             # print(state_info)
             if len(state_info) > 1 and "{0}" in state_info and "1 Inf(0)" in " ".join(acceptance_condition):
                 # print('11111111',current_state)
@@ -426,26 +426,26 @@ def hoa_to_ba(hoa_content):
                 import re
                 numbers = re.findall(r'Inf\((\d+)\)', " ".join(acceptance_condition))
                 numbers = [int(num) for num in numbers]
-                # 已经拆分好的列表
+
                 parts =state_info
 
-                # 合并花括号中的内容
+
                 result = []
                 temp = ''
                 for part in parts:
                     if part.startswith('{'):
-                        # 如果部分内容以 `{` 开头，开始合并
+
                         temp += part
                     elif part.endswith('}'):
-                        # 如果部分内容以 `}` 结尾，合并并结束
+      
                         temp += ' ' + part if temp else part
                         result.append(temp)
                         temp = ''
                     elif temp:
-                        # 如果已经在合并中，将当前部分添加到临时变量
+                    
                         temp += ' ' + part
                     else:
-                        # 如果没有合并，将该部分直接添加
+                    
                         result.append(part)
 
                 state_info_new = result[-1].replace("{", "").replace("}", "")
@@ -459,7 +459,7 @@ def hoa_to_ba(hoa_content):
 
         elif parsing_states and line.startswith("["):
             try:
-                # 解析转移：标签和目标状态
+                
                 # print(line)
                 if '{' in line:
                     state_info1 = line.split()
@@ -483,30 +483,30 @@ def hoa_to_ba(hoa_content):
                 destination = transition_parts[1]
                 destination_state = f"[{destination}]"
 
-                # 如果标签是 "[t]"，保留不变
+                
                 if label == "[t]":
                     transitions.append(f"t,{current_state}->{destination_state}")
                     if "0 t" in " ".join(acceptance_condition):
                         accepting_states.append(f"[{transition_parts[1]}]")
                 else:
-                    # 使用 AP 表进行标签转换
+                    
                     # print(label.strip("[]"))
-                    readable_labels = parse_label(label.strip("[]"))  # 获取所有 OR 分隔的条件
-                    # 将 OR 转换为单独的转移
+                    readable_labels = parse_label(label.strip("[]"))  
+                    
                     for sub_label in readable_labels:
                         transitions.append(f"{sub_label},{current_state}->{destination_state}")
 
             except (IndexError, ValueError) as e:
                 raise RuntimeError(f"Error processing transition '{line}': {e}")
 
-    # 确保接受状态是唯一的
+    
     accepting_states = list(set(accepting_states))
 
-    # 如果没有指定初始状态，假设第一个状态为初始状态
+    
     if not initial_state and transitions:
         initial_state = transitions[0].split(",")[1].split("->")[0]
 
-    # 格式化 BA 内容
+    
     ba_content = f"{initial_state}\n"
     ba_content += "\n".join(transitions) + "\n"
     ba_content += "\n".join(accepting_states) + "\n"
@@ -518,16 +518,11 @@ def save_to_ba_file(content, filename="d:/RA/RAwork/Experiment/Round1/output.ba"
     try:
         with open(filename, 'w', encoding='utf-8') as file:
             file.write(content)
-        print(f"文件已保存到 {filename}")
+        print(f"The file has been saved to {filename}")
     except Exception as e:
-        print(f"保存文件时出错: {e}")
+        print(f"Error occurred while saving the file: {e}")
 
-# --------------------- RABIT 相关 -------------------------
-root_dir = 'D:/RA/RAwork/Experiment/rabit250 - 副本/'
-rabit_jar = os.path.join(root_dir, 'out/artifacts/rabit250____jar/rabit250 - 副本.jar')
-input_ba_path = os.path.join('d:/RA/RAwork/Experiment/Round1/output.ba')
-comparison_automaton = os.path.join('d:/RA/RAwork/Experiment/Round1/Baserule.ba')
-
+# --------------------- RABIT  -------------------------
 def check_file_exists(file_path):
     if os.path.isfile(file_path):
         print(f"{file_path} exists.")
@@ -547,9 +542,6 @@ rabit_command = [
 ]
 
 def run_rabit_and_check_inclusion():
-    """
-    调用 RABIT 检查 Aut A 与 Aut B 的语言包含性
-    """
     print("Checking language inclusion with RABIT...")
     rabit_process = subprocess.run(rabit_command, capture_output=True, text=True)
     output = rabit_process.stdout
@@ -567,7 +559,7 @@ def run_rabit_and_check_inclusion():
         print("The language of the first automaton is not included in the language of the second automaton.")
         return False, output
 
-# ---------------- 新版 correct_input_with_gpt 函数 ----------------
+# ----------------  correct_input_with_gpt  ----------------
 def gpt_understand_rabit_output(LTL1,input_BA, comparison_BA, checking_output,comparison_LTL):
     prompt = (
         f"""
@@ -625,26 +617,76 @@ def gpt_correct_ltl(LTL1, understanding_output):
     corrected_ltl = gpt_transform(prompt)
     return corrected_ltl
 
-# --------------------- 主流程 -----------------------------
+def extract_atomic_propositions(ltl_formula):
+    url = 'https://spot.lre.epita.fr/app/'
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--incognito")  
+    chrome_options.add_argument("--disable-application-cache")  
+
+    driver = webdriver.Chrome(options=chrome_options)
+
+
+    driver.get(url)
+    WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//input[@type="text" and @aria-invalid="false"]'))
+        )
+
+
+    input_element = driver.find_element(By.XPATH, '//input[@type="text" and @aria-invalid="false"]')
+    input_element.clear()
+    input_element.send_keys(ltl_formula)
+    input_element.send_keys(Keys.RETURN)
+    time.sleep(3)  
+
+    hoa_element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//span[text()="HOA"]'))
+        )
+    hoa_element.click()
+    time.sleep(2)
+
+    output_element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//pre[@class="jss15"]'))
+        )
+    output_text = output_element.text
+
+    driver.quit()
+    
+    ap_match = re.search(r'AP:\s+\d+\s+((?:"[^"]*"\s*)+)', output_text)
+    
+    if not ap_match:
+        print("AP section not found.")
+        return []
+    
+    atomic_propositions = ap_match.group(1).split('" "')
+    
+    atomic_propositions = [prop.replace('"', '').strip() for prop in atomic_propositions]
+    
+    return atomic_propositions
+
+
+# --------------------- Main -----------------------------
 if __name__ == "__main__":
-    # 1) 先获取初始 LTL
+    # 1) initial LTL
     ltl_3, raw_nl_2 = generate_and_print_ltl()
-    atomic_proposition_library= [
-    "turnRight",             # 左转
-    "goStraight",            # 右转
-    "turnLeft","reachDestination"         # 直行
-]
+    
     comparison_LTL='G((goStraight -> F(turnRight)) & (turnRight -> F(turnLeft)) & (turnLeft -> F(reachDestination)))'
+    atomic_proposition_library = extract_atomic_propositions(comparison_LTL)
+
     if not ltl_3:
         print("No LTL formula generated. Exiting.")
         exit(1)
     
     ltl_3=gpt_replace_AP(atomic_proposition_library,ltl_3)
 
-    # 2) 初次转换 LTL -> BA
+    # 2) LTL -> BA
     automate_web_interaction(ltl_3)
 
-    # 读入对比 BA (Aut B)
+    
     with open(comparison_automaton, 'r') as f:
         autB_ba_text = f.read()
 
@@ -656,16 +698,16 @@ if __name__ == "__main__":
         iteration += 1
         print(f"\n***** Starting iteration {iteration} *****")
 
-        # 3) RABIT 检查包含性
+        # 3) RABIT 
         included, rabit_output = run_rabit_and_check_inclusion()
         if included:
             break
 
-        # 如果不包含，就需要 GPT 修正 LTL
+        
         with open(input_ba_path, 'r') as f:
-            autA_ba_text = f.read()  # Aut A 的 BA 文件（output.ba 的最新内容）
+            autA_ba_text = f.read()  
 
-        # 调用新版 correct_input_with_gpt，提供(原始 LTL, Aut A BA, Aut B BA, RABIT输出)
+        # correct_input_with_gpt
         understanding_output = gpt_understand_rabit_output(current_ltl,
             autA_ba_text,
             autB_ba_text,
@@ -677,7 +719,7 @@ if __name__ == "__main__":
             print("Failed to get a corrected LTL formula from GPT. Exiting.")
             break
 
-        # 4) 语法校验
+        # 4) syntactic check
         corrected_ltl = correct_ltl_formula(corrected_ltl)
         if corrected_ltl is None:
             print("Failed to correct the LTL syntax. Exiting.")
@@ -685,7 +727,7 @@ if __name__ == "__main__":
 
         print(f"[Iteration {iteration}] Corrected LTL by GPT:\n{corrected_ltl}")
 
-        # 5) 再次转换
+        # 5) ltl2BA
         automate_web_interaction(corrected_ltl)
         current_ltl = corrected_ltl
 
