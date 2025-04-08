@@ -16,8 +16,8 @@ import subprocess
 # ------------------------- FILE PATH -----------------------------
 root_dir = 'local path'
 rabit_jar = os.path.join(root_dir, 'out/artifacts/rabit250____jar/rabit250 - new.jar')
-input_ba_path = os.path.join('d:/RA/RAwork/Experiment/Round1/output.ba')
-comparison_automaton = os.path.join('d:/RA/RAwork/Experiment/Round1/Baserule.ba')
+input_ba_path = os.path.join((local_save_path))
+comparison_automaton = os.path.join(Baserule_ba_file_path)
 
 
 # ------------------------- GPT API -----------------------------
