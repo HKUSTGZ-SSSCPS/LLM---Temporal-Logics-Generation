@@ -16,10 +16,9 @@ import subprocess
 # ------------------------- FILE PATH -----------------------------
 root_dir = 'local path'
 rabit_jar = os.path.join(root_dir, 'out/artifacts/rabit250____jar/rabit250 - new.jar')
-input_ba_path = os.path.join((local_save_path))
-comparison_automaton = os.path.join(Baserule_ba_file_path)
-Outputfilename=os.path.join(output_ba_file_path)
-
+input_ba_path = os.path.join(root_dir, 'output.ba')
+comparison_automaton = os.path.join(root_dir, ' Baserule.ba’)
+Outputfilename=os.path.join(root_dir, ' Output.ba’)
 
 # ------------------------- GPT API -----------------------------
 api_url = "API url"
@@ -515,11 +514,11 @@ def hoa_to_ba(hoa_content):
     return ba_content
 
 
-def save_to_ba_file(content, Outputfilename):
+def save_to_ba_file(content, input_ba_path):
     try:
-        with open(Outputfilename, 'w', encoding='utf-8') as file:
+        with open(input_ba_path, 'w', encoding='utf-8') as file:
             file.write(content)
-        print(f"The file has been saved to {Outputfilename}")
+        print(f"The file has been saved to {input_ba_path}")
     except Exception as e:
         print(f"Error occurred while saving the file: {e}")
 
