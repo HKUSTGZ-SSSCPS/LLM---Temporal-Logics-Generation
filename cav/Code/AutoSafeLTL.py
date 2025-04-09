@@ -15,15 +15,15 @@ import subprocess
 
 # ------------------------- FILE PATH -----------------------------
 root_dir = 'local path'
-rabit_jar = os.path.join(root_dir, 'out/artifacts/rabit250____jar/rabit250 - new.jar')
+rabit_jar = os.path.join(root_dir, 'rabit250 - new/rabit250 - new/out/artifacts/rabit250____jar/rabit250 - new.jar')
 input_ba_path = os.path.join(root_dir, 'output.ba')
 comparison_automaton = os.path.join(root_dir, 'Baserule.ba')
 Outputfilename=os.path.join(root_dir, 'Output.ba')
 
 # ------------------------- GPT API -----------------------------
 api_url = "API url"
-headers = { 
-    "Content-Type": "application/json", 
+headers = {
+    "Content-Type": "application/json",
     "Authorization": "API Key"  # Replace with your own key.
 }
 
@@ -298,8 +298,8 @@ def automate_web_interaction(ltl_formula):
 
 
     
-    ba_result = hoa_to_ba(output_text, input_ba_path)
-    save_to_ba_file(ba_result)
+    ba_result = hoa_to_ba(output_text)
+    save_to_ba_file(ba_result,input_ba_path)
     print("The conversion is complete, and the result has been saved as output.ba")
     print("Conversion result:")
     print(ba_result)
