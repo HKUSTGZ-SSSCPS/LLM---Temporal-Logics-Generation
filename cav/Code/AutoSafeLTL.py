@@ -298,7 +298,7 @@ def automate_web_interaction(ltl_formula):
 
 
     
-    ba_result = hoa_to_ba(output_text)
+    ba_result = hoa_to_ba(output_text, input_ba_path)
     save_to_ba_file(ba_result)
     print("The conversion is complete, and the result has been saved as output.ba")
     print("Conversion result:")
