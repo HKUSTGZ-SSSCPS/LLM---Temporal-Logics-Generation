@@ -12,6 +12,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import time
 import os
 import subprocess
+import pandas as pd
 
 # ------------------------- FILE PATH -----------------------------
 root_dir = 'local path'
@@ -19,6 +20,7 @@ rabit_jar = os.path.join(root_dir, 'rabit250 - new/rabit250 - new/out/artifacts/
 input_ba_path = os.path.join(root_dir, 'output.ba')
 comparison_automaton = os.path.join(root_dir, 'Baserule.ba')
 Outputfilename=os.path.join(root_dir, 'Output.ba')
+benchmarkpath=os.path.join(root_dir, 'Dataset.xlsx')
 
 # ------------------------- GPT API -----------------------------
 api_url = "API url"
@@ -669,23 +671,18 @@ def extract_atomic_propositions(ltl_formula):
     return atomic_propositions
 
 
-# --------------------- Main -----------------------------
-if __name__ == "__main__":
-    # 1) initial LTL
-    ltl_3, raw_nl_2 = generate_and_print_ltl()
-    
+def AutoSafeLTL_Method(ltl_3, raw_nl_2):
     comparison_LTL='G((goStraight -> F(turnRight)) & (turnRight -> F(turnLeft)) & (turnLeft -> F(reachDestination)))'
     atomic_proposition_library = extract_atomic_propositions(comparison_LTL)
 
     if not ltl_3:
         print("No LTL formula generated. Exiting.")
-        exit(1)
+        return False
     
     ltl_3=gpt_replace_AP(atomic_proposition_library,ltl_3)
 
     # 2) LTL -> BA
     automate_web_interaction(ltl_3)
-
     
     with open(comparison_automaton, 'r') as f:
         autB_ba_text = f.read()
@@ -703,7 +700,6 @@ if __name__ == "__main__":
         if included:
             break
 
-        
         with open(input_ba_path, 'r') as f:
             autA_ba_text = f.read()  
 
@@ -735,3 +731,15 @@ if __name__ == "__main__":
         print("\nThe language of the first automaton is now included in the language of the second automaton after correction.")
     else:
         print("\nUnable to reach 'Included' status. Please check your GPT responses or logic.")
+    return included
+
+# --------------------- Main -----------------------------
+if __name__ == "__main__":
+
+    ltl_3, raw_nl_2 = generate_and_print_ltl()
+    AutoSafeLTL_Method(ltl_3, raw_nl_2)
+    
+    #for idx, (ltl_3, raw_nl_2) in enumerate(pd.read_excel(benchmarkpath).iloc[:50, [0,1]].values, 1):
+        #print(f" Processing Pair {idx}/50 ".center(80, "-"))
+        #AutoSafeLTL_Method(ltl_3, raw_nl_2) 
+        #print("\n" + "-"*80)
