@@ -739,7 +739,7 @@ if __name__ == "__main__":
     ltl_3, raw_nl_2 = generate_and_print_ltl()
     AutoSafeLTL_Method(ltl_3, raw_nl_2)
     
-    #for idx, (ltl_3, raw_nl_2) in enumerate(pd.read_excel(benchmarkpath).iloc[:50, [0,1]].values, 1):
+    #for idx, (ltl_3, raw_nl_2) in enumerate(pd.read_excel(benchmarkpath).iloc[:50, [1,0]].values, 1):
         #print(f" Processing Pair {idx}/50 ".center(80, "-"))
         #AutoSafeLTL_Method(ltl_3, raw_nl_2) 
         #print("\n" + "-"*80)
